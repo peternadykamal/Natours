@@ -69,6 +69,46 @@ app.post("/api/v1/tours", (req, res) => {
   );
 });
 
+app.patch("/api/v1/tours/:id", (req, res) => {
+  const id = req.params.id * 1; // convert a string id to a number
+  if (id > toursData.length - 1) {
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+    return;
+  }
+
+  const tour = toursData.find((el) => el.id === id);
+  const updatedTour = req.body;
+
+  for (let key in tour) {
+    if (updatedTour.hasOwnProperty(key)) {
+      tour[key] = updatedTour[key];
+    }
+  }
+
+  console.log(toursData);
+
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(toursData),
+    (err) => {
+      if (err)
+        res.status(422).json({
+          status: "fail",
+          message: "couldn't update new tour",
+        });
+      res.status(200).json({
+        status: "success",
+        data: {
+          tour: tour,
+        },
+      });
+    }
+  );
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}, http://127.0.0.1:${port}`);
