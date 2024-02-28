@@ -10,8 +10,7 @@ const toursData = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, "utf-8")
 );
 
-// route handler
-app.get("/api/v1/tours", (req, res) => {
+const getAllTours = function (req, res) {
   res.status(200).json({
     status: "success",
     results: toursData.length,
@@ -19,9 +18,9 @@ app.get("/api/v1/tours", (req, res) => {
       tours: toursData,
     },
   });
-});
+};
 
-app.get("/api/v1/tours/:id", (req, res) => {
+const getTour = function (req, res) {
   // using colon in the route means that it is a parameter and it can be accessed using req.params
   // we can also have optional parameters by using a question mark e.g. /api/v1/tours/:id/:x?
 
@@ -42,9 +41,9 @@ app.get("/api/v1/tours/:id", (req, res) => {
       tour: tour,
     },
   });
-});
+};
 
-app.post("/api/v1/tours", (req, res) => {
+const createTour = function (req, res) {
   const newId = toursData[toursData.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body); // Object.assign is used to merge two objects and create a new object
 
@@ -69,9 +68,9 @@ app.post("/api/v1/tours", (req, res) => {
       });
     }
   );
-});
+};
 
-app.patch("/api/v1/tours/:id", (req, res) => {
+const updateTour = function (req, res) {
   const id = req.params.id * 1; // convert a string id to a number
   if (id > toursData.length - 1) {
     res.status(404).json({
@@ -108,9 +107,9 @@ app.patch("/api/v1/tours/:id", (req, res) => {
       });
     }
   );
-});
+};
 
-app.delete("/api/v1/tours/:id", (req, res) => {
+const deleteTour = function (req, res) {
   const id = req.params.id * 1;
   if (id > toursData.length - 1) {
     res.status(404).json({
@@ -140,7 +139,21 @@ app.delete("/api/v1/tours/:id", (req, res) => {
       });
     }
   );
-});
+};
+
+// route handler
+// app.get("/api/v1/tours", getAllTours);
+// app.get("/api/v1/tours/:id", getTour);
+// app.post("/api/v1/tours", createTour);
+// app.patch("/api/v1/tours/:id", updateTour);
+// app.delete("/api/v1/tours/:id", deleteTour);
+
+app.route("/api/v1/tours").get(getAllTours).post(createTour);
+app
+  .route("/api/v1/tours/:id")
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 const port = 3000;
 app.listen(port, () => {
