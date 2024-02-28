@@ -3,6 +3,9 @@ const fs = require("fs");
 
 const app = express();
 
+// middleware
+app.use(express.json()); // middleware to parse the body of the request to json, which is important to get the data from the body of the request
+
 const toursData = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, "utf-8")
 );
@@ -16,6 +19,54 @@ app.get("/api/v1/tours", (req, res) => {
       tours: toursData,
     },
   });
+});
+
+app.get("/api/v1/tours/:id", (req, res) => {
+  // using colon in the route means that it is a parameter and it can be accessed using req.params
+  // we can also have optional parameters by using a question mark e.g. /api/v1/tours/:id/:x?
+
+  const id = req.params.id * 1; // convert a string id to a number
+  if (id > toursData.length - 1) {
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+    return;
+  }
+
+  const tour = toursData.find((el) => el.id === id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour: tour,
+    },
+  });
+});
+
+app.post("/api/v1/tours", (req, res) => {
+  const newId = toursData[toursData.length - 1].id + 1;
+  const newTour = Object.assign({ id: newId }, req.body); // Object.assign is used to merge two objects and create a new object
+
+  toursData.push(newTour);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(toursData),
+    (err) => {
+      if (err)
+        res.status(422).json({
+          status: "fail",
+          message: "couldn't create new tour",
+        });
+      res.status(201).json({
+        // 201 means created
+        status: "success",
+        data: {
+          tour: newTour,
+        },
+      });
+    }
+  );
 });
 
 const port = 3000;
