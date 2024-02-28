@@ -53,11 +53,13 @@ app.post("/api/v1/tours", (req, res) => {
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(toursData),
     (err) => {
-      if (err)
+      if (err) {
         res.status(422).json({
           status: "fail",
           message: "couldn't create new tour",
         });
+      }
+
       res.status(201).json({
         // 201 means created
         status: "success",
@@ -88,22 +90,53 @@ app.patch("/api/v1/tours/:id", (req, res) => {
     }
   }
 
-  console.log(toursData);
-
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(toursData),
     (err) => {
-      if (err)
+      if (err) {
         res.status(422).json({
           status: "fail",
           message: "couldn't update new tour",
         });
+      }
       res.status(200).json({
         status: "success",
         data: {
           tour: tour,
         },
+      });
+    }
+  );
+});
+
+app.delete("/api/v1/tours/:id", (req, res) => {
+  const id = req.params.id * 1;
+  if (id > toursData.length - 1) {
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+    return;
+  }
+
+  const updatedToursData = toursData.filter((el) => el.id !== id);
+
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(updatedToursData),
+    (err) => {
+      if (err) {
+        res.status(422).json({
+          status: "fail",
+          message: "couldn't update new tour",
+        });
+      }
+
+      res.status(204).json({
+        // 204 means no content, used for successful delete
+        status: "success",
+        data: null,
       });
     }
   );
