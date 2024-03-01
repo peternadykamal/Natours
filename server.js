@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 
 // the main purpose of the server.js
 // 1. to start the server
+// 2. to load the environment variables
 
 // environment variables are global variables specific to the environment (OS) in which a process can
 // access and use them.

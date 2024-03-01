@@ -45,8 +45,7 @@ const getTour = function (req, res) {
 };
 
 const validateCreateTourBody = function (req, res, next) {
-  const condition =
-    !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("price");
+  const condition = !("name" in req.body) || !("price" in req.body);
 
   if (condition) {
     res.status(400).json({
@@ -61,7 +60,7 @@ const validateCreateTourBody = function (req, res, next) {
 
 const createTour = function (req, res) {
   const newId = toursData[toursData.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body); // Object.assign is used to merge two objects and create a new object
+  const newTour = { id: newId, ...req.body }; // Object.assign is used to merge two objects and create a new object
 
   toursData.push(newTour);
   fs.writeFile(tourDataPath, JSON.stringify(toursData), (err) => {
@@ -87,11 +86,11 @@ const updateTour = function (req, res) {
   const tour = toursData.find((el) => el.id === id);
   const updatedTour = req.body;
 
-  for (let key in tour) {
-    if (updatedTour.hasOwnProperty(key)) {
+  Object.keys(tour).forEach((key) => {
+    if (key in updatedTour) {
       tour[key] = updatedTour[key];
     }
-  }
+  });
 
   fs.writeFile(tourDataPath, JSON.stringify(toursData), (err) => {
     if (err) {
