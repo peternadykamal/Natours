@@ -3,16 +3,29 @@ const fs = require("fs");
 
 const app = express();
 
+// MIDDLEWARE
 // middleware
 app.use(express.json()); // middleware to parse the body of the request to json, which is important to get the data from the body of the request
+
+app.use((req, res, next) => {
+  console.log("hello from the middleware");
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 const toursData = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, "utf-8")
 );
 
+// ROUTE HANDLERS
 const getAllTours = function (req, res) {
   res.status(200).json({
     status: "success",
+    requestedAt: req.requestTime,
     results: toursData.length,
     data: {
       tours: toursData,
@@ -141,7 +154,8 @@ const deleteTour = function (req, res) {
   );
 };
 
-// route handler
+// ROUTES
+
 // app.get("/api/v1/tours", getAllTours);
 // app.get("/api/v1/tours/:id", getTour);
 // app.post("/api/v1/tours", createTour);
@@ -155,6 +169,7 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
+// START THE SERVER
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}, http://127.0.0.1:${port}`);
