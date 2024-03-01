@@ -44,6 +44,21 @@ const getTour = function (req, res) {
   });
 };
 
+const validateCreateTourBody = function (req, res, next) {
+  const condition =
+    !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("price");
+
+  if (condition) {
+    res.status(400).json({
+      status: "fail",
+      message: "missing name or price in the request body",
+    });
+    return;
+  }
+
+  next();
+};
+
 const createTour = function (req, res) {
   const newId = toursData[toursData.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body); // Object.assign is used to merge two objects and create a new object
@@ -118,6 +133,7 @@ module.exports = {
   checkId,
   getAllTours,
   getTour,
+  validateCreateTourBody,
   createTour,
   updateTour,
   deleteTour,

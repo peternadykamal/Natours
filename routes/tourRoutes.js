@@ -13,7 +13,9 @@ router.param("id", tourController.checkId);
 router
   .route("/")
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  // middleware to validate the request body then create a tour
+  .post(tourController.validateCreateTourBody, tourController.createTour);
+
 router
   .route("/:id")
   .get(tourController.getTour)
