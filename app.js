@@ -155,6 +155,19 @@ const deleteTour = function (req, res) {
   );
 };
 
+const notDefinedRoute = function (req, res) {
+  res.status(500).json({
+    status: "errer",
+    message: "This route is not yet defined",
+  });
+};
+
+const getAllUsers = notDefinedRoute;
+const createUser = notDefinedRoute;
+const getUser = notDefinedRoute;
+const updateUser = notDefinedRoute;
+const deleteUser = notDefinedRoute;
+
 // ROUTES
 
 // app.get("/api/v1/tours", getAllTours);
@@ -169,6 +182,14 @@ app
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
+
+app.route("/api/v1/users").get(getAllUsers).post(createUser);
+
+app
+  .route("/api/v1/users/:id")
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 // START THE SERVER
 const port = 3000;
