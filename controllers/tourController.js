@@ -7,6 +7,17 @@ const tourDataPath = `${__dirname}/../dev-data/data/tours-simple.json`;
 
 const toursData = JSON.parse(fs.readFileSync(tourDataPath, "utf-8"));
 
+const checkId = function (req, res, next, id) {
+  if (id > toursData.length - 1) {
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+    return;
+  }
+  next();
+};
+
 const getAllTours = function (req, res) {
   res.status(200).json({
     status: "success",
@@ -22,15 +33,7 @@ const getTour = function (req, res) {
   // using colon in the route means that it is a parameter and it can be accessed using req.params
   // we can also have optional parameters by using a question mark e.g. /api/v1/tours/:id/:x?
 
-  const id = req.params.id * 1; // convert a string id to a number
-  if (id > toursData.length - 1) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    });
-    return;
-  }
-
+  const id = req.params.id * 1;
   const tour = toursData.find((el) => el.id === id);
 
   res.status(200).json({
@@ -65,15 +68,7 @@ const createTour = function (req, res) {
 };
 
 const updateTour = function (req, res) {
-  const id = req.params.id * 1; // convert a string id to a number
-  if (id > toursData.length - 1) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    });
-    return;
-  }
-
+  const id = req.params.id * 1;
   const tour = toursData.find((el) => el.id === id);
   const updatedTour = req.body;
 
@@ -101,14 +96,6 @@ const updateTour = function (req, res) {
 
 const deleteTour = function (req, res) {
   const id = req.params.id * 1;
-  if (id > toursData.length - 1) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    });
-    return;
-  }
-
   const updatedToursData = toursData.filter((el) => el.id !== id);
 
   fs.writeFile(tourDataPath, JSON.stringify(updatedToursData), (err) => {
@@ -128,6 +115,7 @@ const deleteTour = function (req, res) {
 };
 
 module.exports = {
+  checkId,
   getAllTours,
   getTour,
   createTour,
