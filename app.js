@@ -1,10 +1,11 @@
-const express = require("express");
 const fs = require("fs");
+const express = require("express");
+const morgan = require("morgan");
 
 const app = express();
 
 // MIDDLEWARE
-// middleware
+app.use(morgan("dev"));
 app.use(express.json()); // middleware to parse the body of the request to json, which is important to get the data from the body of the request
 
 app.use((req, res, next) => {
