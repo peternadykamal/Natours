@@ -13,6 +13,7 @@ const app = express();
 // MIDDLEWARE
 app.use(morgan("dev")); // middleware to log the request to the console
 app.use(express.json()); // middleware to parse the body of the request to json, which is important to get the data from the body of the request
+app.use(express.static(`${__dirname}/public`)); // middleware to serve static files
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
