@@ -70,7 +70,29 @@ const tourSchema = new mongoose.Schema({
   },
 });
 
-const Tour = mongoose.model("Tour", tourSchema); // it is conventional to have model in title case
+const Tour = mongoose.model("Tour", tourSchema);
+
+// let's define what is schema and model
+// schema is a definition of the structure of the data, it is a blueprint
+// that defines different fields and their types and their validation
+// model is a wrapper around the schema, it is a class that is used to create
+// documents that will be stored in the database
+
+// let's create a document
+const testTour = new Tour({
+  name: "The Park Camper",
+  price: 997,
+});
+
+testTour
+  .save()
+  .then((doc) => {
+    // doc is the document that was saved to the database
+    console.log(doc);
+  })
+  .catch((err) => {
+    console.log("ERROR 💥💥: ", err);
+  });
 
 // START THE SERVER
 const port = process.env.PORt || 3000;
