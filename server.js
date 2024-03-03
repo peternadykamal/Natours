@@ -1,8 +1,10 @@
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
 // the main purpose of the server.js
 // 1. to start the server
 // 2. to load the environment variables
+// 3. to connect with database
 
 // environment variables are global variables specific to the environment (OS) in which a process can
 // access and use them.
@@ -51,6 +53,24 @@ if (process.env.NODE_ENV === "development") {
 
 DB = DB.replace("<user>", DB_USER).replace("<password>", DB_PASSWORD);
 mongoose.connect(DB).then(() => console.log("DB Connections successfully"));
+
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "A tour must have a name"],
+    unique: true,
+  },
+  rating: {
+    type: Number,
+    default: 4.5,
+  },
+  price: {
+    type: Number,
+    required: [true, "A tour must have a price"],
+  },
+});
+
+const Tour = mongoose.model("Tour", tourSchema); // it is conventional to have model in title case
 
 // START THE SERVER
 const port = process.env.PORt || 3000;
