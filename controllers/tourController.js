@@ -1,138 +1,59 @@
-const fs = require("fs");
-
-// __dirname is a special variable in node that gives the path to the current directory of
-// current file.
-
-const tourDataPath = `${__dirname}/../dev-data/data/tours-simple.json`;
-
-const toursData = JSON.parse(fs.readFileSync(tourDataPath, "utf-8"));
-
-const checkId = function (req, res, next, id) {
-  if (id > toursData.length - 1) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    });
-    return;
-  }
-  next();
-};
+const Tour = require("../models/tourModel");
 
 const getAllTours = function (req, res) {
   res.status(200).json({
     status: "success",
     requestedAt: req.requestTime,
-    results: toursData.length,
-    data: {
-      tours: toursData,
-    },
+    // results: toursData.length,
+    // data: {
+    //   tours: toursData,
+    // },
   });
 };
 
 const getTour = function (req, res) {
   // using colon in the route means that it is a parameter and it can be accessed using req.params
   // we can also have optional parameters by using a question mark e.g. /api/v1/tours/:id/:x?
+  // const id = req.params.id * 1;
+  // const tour = toursData.find((el) => el.id === id);
+  // res.status(200).json({
+  //   status: "success",
+  //   data: {
+  //     tour: tour,
+  //   },
+  // });
+};
 
-  const id = req.params.id * 1;
-  const tour = toursData.find((el) => el.id === id);
-
-  res.status(200).json({
+const createTour = function (req, res) {
+  res.status(201).json({
+    // 201 means created
     status: "success",
     data: {
-      tour: tour,
+      // tour: newTour,
     },
   });
 };
 
-const validateCreateTourBody = function (req, res, next) {
-  const condition = !("name" in req.body) || !("price" in req.body);
-
-  if (condition) {
-    res.status(400).json({
-      status: "fail",
-      message: "missing name or price in the request body",
-    });
-    return;
-  }
-
-  next();
-};
-
-const createTour = function (req, res) {
-  const newId = toursData[toursData.length - 1].id + 1;
-  const newTour = { id: newId, ...req.body }; // Object.assign is used to merge two objects and create a new object
-
-  toursData.push(newTour);
-  fs.writeFile(tourDataPath, JSON.stringify(toursData), (err) => {
-    if (err) {
-      res.status(422).json({
-        status: "fail",
-        message: "couldn't create new tour",
-      });
-    }
-
-    res.status(201).json({
-      // 201 means created
-      status: "success",
-      data: {
-        tour: newTour,
-      },
-    });
-  });
-};
-
 const updateTour = function (req, res) {
-  const id = req.params.id * 1;
-  const tour = toursData.find((el) => el.id === id);
-  const updatedTour = req.body;
-
-  Object.keys(tour).forEach((key) => {
-    if (key in updatedTour) {
-      tour[key] = updatedTour[key];
-    }
-  });
-
-  fs.writeFile(tourDataPath, JSON.stringify(toursData), (err) => {
-    if (err) {
-      res.status(422).json({
-        status: "fail",
-        message: "couldn't update new tour",
-      });
-    }
-    res.status(200).json({
-      status: "success",
-      data: {
-        tour: tour,
-      },
-    });
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour: "<Updated tour here>",
+    },
   });
 };
 
 const deleteTour = function (req, res) {
-  const id = req.params.id * 1;
-  const updatedToursData = toursData.filter((el) => el.id !== id);
-
-  fs.writeFile(tourDataPath, JSON.stringify(updatedToursData), (err) => {
-    if (err) {
-      res.status(422).json({
-        status: "fail",
-        message: "couldn't update new tour",
-      });
-    }
-
-    res.status(204).json({
-      // 204 means no content, used for successful delete
-      status: "success",
-      data: null,
-    });
+  res.status(204).json({
+    // 204 means no content, used for successful delete
+    status: "success",
+    data: null,
   });
 };
 
 module.exports = {
-  checkId,
   getAllTours,
   getTour,
-  validateCreateTourBody,
   createTour,
   updateTour,
   deleteTour,
