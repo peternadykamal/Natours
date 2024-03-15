@@ -1,54 +1,98 @@
 const Tour = require("../models/tourModel");
 
-const getAllTours = function (req, res) {
-  res.status(200).json({
-    status: "success",
-    requestedAt: req.requestTime,
-    // results: toursData.length,
-    // data: {
-    //   tours: toursData,
-    // },
-  });
+const getAllTours = async function (req, res) {
+  try {
+    const tours = await Tour.find();
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      results: tours.length,
+      data: {
+        tours: tours,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
 };
 
-const getTour = function (req, res) {
-  // using colon in the route means that it is a parameter and it can be accessed using req.params
-  // we can also have optional parameters by using a question mark e.g. /api/v1/tours/:id/:x?
-  // const id = req.params.id * 1;
-  // const tour = toursData.find((el) => el.id === id);
-  // res.status(200).json({
-  //   status: "success",
-  //   data: {
-  //     tour: tour,
-  //   },
-  // });
+const getTour = async function (req, res) {
+  try {
+    const { id } = req.params;
+    const tour = await Tour.findById(id);
+    // const tour = await Tour.findOne({ _id: id });
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        tour: tour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
 };
 
-const createTour = function (req, res) {
-  res.status(201).json({
-    // 201 means created
-    status: "success",
-    data: {
-      // tour: newTour,
-    },
-  });
+const createTour = async function (req, res) {
+  try {
+    const newTour = await Tour.create(req.body);
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
 };
 
-const updateTour = function (req, res) {
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour: "<Updated tour here>",
-    },
-  });
+const updateTour = async function (req, res) {
+  try {
+    const { id } = req.params;
+    const newTour = await Tour.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
 };
 
-const deleteTour = function (req, res) {
-  res.status(204).json({
-    // 204 means no content, used for successful delete
-    status: "success",
-    data: null,
-  });
+const deleteTour = async function (req, res) {
+  try {
+    const { id } = req.params;
+    await Tour.findByIdAndDelete(id);
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
 };
 
 module.exports = {

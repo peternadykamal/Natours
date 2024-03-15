@@ -4,9 +4,9 @@
   "description": "learning node, express and mongoDB",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./server.js",
-    "start:dev": "SET NODE_ENV=development&&nodemon ./server.js",
-    "start:prod": "SET NODE_ENV=production&&node ./server.js"
+    "start": "nodemon server.js",
+    "start:dev": "SET NODE_ENV=development&&nodemon server.js",
+    "start:prod": "SET NODE_ENV=production&&node server.js"
   },
   "keywords": [],
   "author": "Peter Nady",
