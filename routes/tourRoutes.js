@@ -9,6 +9,8 @@ router
   .get(tourController.aliasTopTours)
   .get(tourController.getAllTours);
 
+router.route("/tour-states").get(tourController.getTourStats);
+
 // defining the routes for tour router
 router
   .route("/")

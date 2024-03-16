@@ -3,8 +3,8 @@ const APIFeatures = require("../utils/apiFeatures");
 
 const aliasTopTours = function (req, res, next) {
   req.query.limit = 5;
-  req.query.sort = "-ratingAverage,price";
-  req.query.fields = "name,price,ratingAverage,summary,difficulty";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,price,ratingsAverage,summary,difficulty";
 
   next();
 };
@@ -110,6 +110,54 @@ const deleteTour = async function (req, res) {
   }
 };
 
+const getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: {
+          ratingsAverage: { $gte: 4.5 },
+        },
+      },
+      {
+        $group: {
+          // _id: null,
+          // _id: "$ratingsAverage",
+          _id: "$difficulty",
+          num: { $sum: 1 },
+          numRatings: { $sum: "$ratingQuantity" },
+          avgRating: { $avg: "$ratingsAverage" },
+          avgPrice: { $avg: "$price" },
+          minPrice: { $min: "$price" },
+          maxPrice: { $max: "$price" },
+        },
+      },
+      {
+        $sort: {
+          avgPrice: 1,
+        },
+      },
+      // {
+      //   $match: {
+      //     _id: { $ne: "easy" },
+      //   },
+      // },
+    ]);
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        stats: stats,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   aliasTopTours,
   getAllTours,
@@ -117,4 +165,5 @@ module.exports = {
   createTour,
   updateTour,
   deleteTour,
+  getTourStats,
 };
