@@ -26,4 +26,29 @@ app.use((req, res, next) => {
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
+// unhandled routes
+app.all("*", (req, res, next) => {
+  const err = new Error(`Can't find ${req.originalUrl} on this server!`);
+  err.status = "fail";
+  err.statusCode = 404;
+
+  // whenever next method is called with an argument, express will know that
+  // there is an error and it will skip all the other middleware and go straight
+  // to the error handling middleware and will assume this argument as an error object
+  next(err);
+});
+
+// to implement the error handling middleware, you simply to need to use app.use
+// then pass a callback function with 4 parms. doing so let express know that
+// this is an error handling middleware
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
+
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+});
+
 module.exports = app;
