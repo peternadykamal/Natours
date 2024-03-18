@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const tourSchema = new mongoose.Schema(
   {
@@ -8,6 +9,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, "A tour must have a duration"],
@@ -63,6 +65,28 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
 });
+
+// document middleware is triggerd during actions like "save", "validate",
+// "remove", "updateOne", and "deleteOne"
+
+// pre hooks: runs before the actual action is performed, which is useful for
+// manipulating the data before saving it to the database
+
+// post hooks: runs after the actual action is performed, which is useful for
+// logging or cleaning up
+// good article: https://blog.stackademic.com/understanding-mongoose-middleware-in-node-js-9b67f1e37b44
+
+tourSchema.pre("save", function (next) {
+  // this object refers to the current document
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// tourSchema.post("save", function (doc, next) {
+//   // note that doc object and this object are the same
+//   console.log(doc);
+//   next();
+// });
 
 const Tour = mongoose.model("Tour", tourSchema);
 
