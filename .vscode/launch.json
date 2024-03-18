@@ -1,0 +1,13 @@
+{
+  "configurations": [
+    {
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**", "node_modules/**/*.js"],
+      "type": "node",
+      "name": "Node: Nodemon",
+      "processId": "${command:PickProcess}",
+      "restart": true
+      // "protocol": "inspector"
+    }
+  ]
+}
