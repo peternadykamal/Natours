@@ -119,6 +119,16 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
+// aggregation middleware is triggered during aggregation pipeline stages
+
+tourSchema.pre("aggregate", function (next) {
+  // this object refers to the current aggregate object
+  // this.pipeline() will show the array of the stages in the aggregate pipeline
+  // which we can add new stages to it
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
+
 const Tour = mongoose.model("Tour", tourSchema);
 
 module.exports = Tour;
