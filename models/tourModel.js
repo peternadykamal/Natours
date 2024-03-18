@@ -55,6 +55,10 @@ const tourSchema = new mongoose.Schema(
       select: false, // this field won't be shown when we query the database
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -69,12 +73,18 @@ tourSchema.virtual("durationWeeks").get(function () {
 // document middleware is triggerd during actions like "save", "validate",
 // "remove", "updateOne", and "deleteOne"
 
+// to include all document middleware actions to be triggered on one function
+// we can use regular expression
+// tourSchema.pre(/save|validate|remove|updateOne|deleteOne/, function )
+// or tourSchema.post(/save|validate|remove|updateOne|deleteOne/, function )
+
 // pre hooks: runs before the actual action is performed, which is useful for
 // manipulating the data before saving it to the database
 
 // post hooks: runs after the actual action is performed, which is useful for
 // logging or cleaning up
 // good article: https://blog.stackademic.com/understanding-mongoose-middleware-in-node-js-9b67f1e37b44
+//             : https://mongoosejs.com/docs/middleware.html
 
 tourSchema.pre("save", function (next) {
   // this object refers to the current document
@@ -87,6 +97,27 @@ tourSchema.pre("save", function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+// query middleware is triggered during queries like "count", "countDocuments"
+//, "deleteMany", "deleteOne", "estimatedDocumentCount", "find", "findOne"
+//, "findOneAndDelete", "findOneAndReplace", "findOneAndUpdate", "remove"
+//, "replaceOne", "update", "updateOne", "updateMany", and "validate"
+
+// to include all query middleware actions that start with "find" to be triggered
+// tourSchema.pre(/^find/, function )
+
+tourSchema.pre(/^find/, function (next) {
+  // this object refers to the current query object
+  this.find({ secretTour: { $ne: true } });
+
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`query took ${Date.now() - this.start} milliseconds`);
+  next();
+});
 
 const Tour = mongoose.model("Tour", tourSchema);
 
