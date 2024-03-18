@@ -10,6 +10,7 @@ router
   .get(tourController.getAllTours);
 
 router.route("/tour-states").get(tourController.getTourStats);
+router.route("/montly-plan/:year").get(tourController.getMonthlyPlan);
 
 // defining the routes for tour router
 router
