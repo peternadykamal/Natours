@@ -63,6 +63,7 @@ const updateTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const newTour = await Tour.findByIdAndUpdate(id, req.body, {
     new: true,
+    runValidators: true,
   });
 
   if (!newTour) {

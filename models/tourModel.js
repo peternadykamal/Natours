@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+const { getDocForValidation } = require("../utils/getDocsForValidation");
 // const validator = require("validator");
 
 const tourSchema = new mongoose.Schema(
@@ -26,7 +27,7 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, "A tour must have a difficulty"],
       enum: {
-        values: ["easy", "meduim", "difficult"],
+        values: ["easy", "medium", "difficult"],
         message: "Difficulty is either easy, medium, difficult",
       },
     },
@@ -48,10 +49,10 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       validate: {
         // val: is the value that we want to validate
-        // this: is the document that is currently being created but not on update
         // the validation function must return true or false
-        validator: function (val) {
-          return val < this.price;
+        validator: async function (val) {
+          const doc = await getDocForValidation(this);
+          return val < doc.price;
         },
         message: "Discount price ({VALUE}) should be below regular price",
         // ({VALUE}): is a mongoose feature that will be replaced with the value
