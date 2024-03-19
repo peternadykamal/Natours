@@ -25,7 +25,10 @@ if (process.env.NODE_ENV === "development") {
 }
 
 DB = DB.replace("<user>", DB_USER).replace("<password>", DB_PASSWORD);
-mongoose.connect(DB).then(() => console.log("DB Connections successfully"));
+mongoose
+  .connect(DB)
+  .then(() => console.log("DB Connections successfully"))
+  .catch(() => console.log("DB Connection failed"));
 
 // START THE SERVER
 const port = process.env.PORt || 3000;
