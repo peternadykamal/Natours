@@ -12,7 +12,7 @@ dotenv.config({ path: `${__dirname}/config.env` });
 
 const app = require("./app");
 
-console.log(`--------------${process.env.NODE_ENV}-------------`);
+console.log(`------------------${process.env.NODE_ENV}------------------`);
 
 // CONNECT WITH DATABASE
 let DB_USER = "";

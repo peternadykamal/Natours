@@ -1,5 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const hpp = require("hpp");
+
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const AppError = require("./utils/appError");
@@ -13,11 +19,58 @@ const { globalErrorHandler } = require("./controllers/errorController");
 const app = express();
 
 // MIDDLEWARE
-app.use(express.json()); // middleware to parse the body of the request to json, which is important to get the data from the body of the request
-app.use(express.static(`${__dirname}/public`)); // middleware to serve static files
+
+// middleware to parse the body of the request to json, which is important to get the data from the body of the request
+app.use(
+  express.json({
+    // we limit the size of the body of the request to 10kb
+    limit: "10kb",
+  })
+);
+
+// data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// data sanitization against XSS
+app.use(xss());
+
+// prevent parameter pollution
+app.use(
+  hpp({
+    // whitelist is an array of the query parameters that we allow to be duplicated
+    whitelist: [
+      "duration",
+      "ratingsQuantity",
+      "ratingsAverage",
+      "maxGroupSize",
+      "difficulty",
+      "price",
+    ],
+  })
+);
+
+// middleware to serve static files
+app.use(express.static(`${__dirname}/public`));
+
+// middleware to log the request to the console
 if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev")); // middleware to log the request to the console
+  app.use(morgan("dev"));
 }
+
+// rate limiting middleware
+app.use(
+  "/api",
+  rateLimit({
+    // this will limit the number of requests from an IP address
+    // to 100 requests per hour
+    max: 100,
+    windowMs: 60 * 60 * 1000,
+    message: "Too many requests from this IP, please try again in an hour",
+  })
+);
+
+// adding security HTTP headers using helmet
+app.use(helmet());
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
