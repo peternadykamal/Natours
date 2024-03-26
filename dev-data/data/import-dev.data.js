@@ -28,9 +28,7 @@ DB = DB.replace("<user>", DB_USER).replace("<password>", DB_PASSWORD);
 mongoose.connect(DB).then(() => console.log("DB Connections successfully"));
 
 // reading the json file
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8")
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, "utf-8"));
 
 // Import data into db
 const importData = async () => {
