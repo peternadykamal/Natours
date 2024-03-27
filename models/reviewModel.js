@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const AppError = require("../utils/appError");
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -16,7 +17,6 @@ const reviewSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
       immutable: true,
     },
     tour: {
@@ -35,6 +35,27 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+// Ensure each user can have only one review on a tour
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
+reviewSchema.pre("save", async function (next) {
+  // Check if there is an existing review for this user on this tour
+  const existingReview = await this.constructor.findOne({
+    tour: this.tour,
+    user: this.user,
+  });
+
+  if (existingReview) {
+    const error = new AppError("You have already reviewed this tour", 400);
+    next(error);
+  }
+
+  // even if the user provide a createdAt date, we will ignore it
+  this.createdAt = Date.now();
+
+  next();
+});
 
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
