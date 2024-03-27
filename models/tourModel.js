@@ -123,6 +123,22 @@ tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
 });
 
+// virtual populate:
+// if there is a one-to-many relationship between two models, where we are using
+// parent referencing (known as parent referencing, for instance, having the
+// tour's ID stored in the review model), we can use virtual populate to
+// populate the child model at the parent model without actually storing the
+// child model id in the parent model
+// we need to identify the foreignField and localField
+// foreignField: is the field in the child model that references the parent model
+// localField: is the field that gets used in the child model to reference the parent model (tour object id)
+
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "tour",
+  localField: "_id",
+}); // don't forget to populate the reviews in the query (or in the pre middleware)
+
 // document middleware is triggerd during actions like "save", "validate",
 // "remove", "updateOne", and "deleteOne"
 

@@ -59,11 +59,8 @@ reviewSchema.pre("save", async function (next) {
 
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
-    path: "tour",
-    select: "-__v",
-  }).populate({
     path: "user",
-    select: "-__v -passwordChangedAt",
+    select: "name photo",
   });
 
   next();
