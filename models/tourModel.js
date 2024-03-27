@@ -182,6 +182,26 @@ tourSchema.pre("aggregate", function (next) {
   next();
 });
 
+// we use this middleware to populate guides data before any find method
+tourSchema.pre(/^find/, function (next) {
+  // if we decided to have tours reference in guides model,
+  // a stack overflow error will occur because guides will reference tours
+  // and tours will reference guides, which cause a recursive loop
+  // to prevent this, we can add a property to the options object
+  // to check if the populate method is called before
+
+  if (this.options._recursed) {
+    return next();
+  }
+
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt",
+    options: { _recursed: true },
+  });
+  next();
+});
+
 const Tour = mongoose.model("Tour", tourSchema);
 
 module.exports = Tour;
