@@ -24,6 +24,10 @@ const getAllReviews = catchAsync(async (req, res, next) => {
 
 // creating new review
 const createReview = catchAsync(async (req, res, next) => {
+  // TODO: this implementation doesn't make sense, because why a user can create a review for another user
+  req.body.tour = req.body.tour || req.params.tourId;
+  req.body.user = req.body.user || req.user.id;
+
   const newReview = await Review.create(req.body);
 
   res.status(201).json({
