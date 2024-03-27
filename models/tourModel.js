@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const { getDocForValidation } = require("../utils/getDocsForValidation");
-const User = require("./userModel");
 // const validator = require("validator");
 
 const tourSchema = new mongoose.Schema(
@@ -107,7 +106,12 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: Array,
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -175,13 +179,6 @@ tourSchema.pre("aggregate", function (next) {
   // this.pipeline() will show the array of the stages in the aggregate pipeline
   // which we can add new stages to it
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
-
-tourSchema.pre("save", async function (next) {
-  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
-
-  this.guides = await Promise.all(guidesPromises);
   next();
 });
 
