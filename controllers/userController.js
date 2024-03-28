@@ -10,10 +10,10 @@ const notDefinedRoute = function (req, res) {
   });
 };
 
-const getAllUsers = notDefinedRoute;
+const getAllUsers = factory.getAll(User);
 const createUser = notDefinedRoute;
-const getUser = notDefinedRoute;
-const updateUser = notDefinedRoute;
+const getUser = factory.getOne(User);
+const updateUser = factory.updateOne(User);
 const deleteUser = factory.deleteOne(User);
 
 const filterObj = (obj, ...allowedFields) => {
