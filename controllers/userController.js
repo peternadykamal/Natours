@@ -3,15 +3,7 @@ const AppError = require("../utils/appError");
 const User = require("../models/userModel");
 const factory = require("./handlerFactory");
 
-const notDefinedRoute = function (req, res) {
-  res.status(500).json({
-    status: "errer",
-    message: "This route is not yet defined",
-  });
-};
-
 const getAllUsers = factory.getAll(User);
-const createUser = notDefinedRoute;
 const getUser = factory.getOne(User);
 const updateUser = factory.updateOne(User);
 const deleteUser = factory.deleteOne(User);
@@ -68,7 +60,6 @@ const deleteMe = catchAsync(async (req, res, next) => {
 
 module.exports = {
   getAllUsers,
-  createUser,
   getUser,
   getMe,
   updateUser,
