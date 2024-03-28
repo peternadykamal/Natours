@@ -1,8 +1,8 @@
 const Review = require("../models/reviewModel");
 const APIFeatures = require("../utils/apiFeatures");
 const { catchAsync } = require("../utils/catch");
+const factory = require("./handlerFactory");
 
-// getting all reviews
 const getAllReviews = catchAsync(async (req, res, next) => {
   // if there is a tour id in the params, then we will filter the reviews by that tour id
   req.query = {
@@ -23,7 +23,6 @@ const getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-// creating new review
 const createReview = catchAsync(async (req, res, next) => {
   req.body.tour = req.body.tour || req.params.tourId;
   req.body.user = req.user.id;
@@ -38,7 +37,10 @@ const createReview = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteReview = factory.deleteOne(Review);
+
 module.exports = {
   getAllReviews,
   createReview,
+  deleteReview,
 };

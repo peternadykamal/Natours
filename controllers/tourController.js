@@ -2,6 +2,7 @@ const Tour = require("../models/tourModel");
 const APIFeatures = require("../utils/apiFeatures");
 const AppError = require("../utils/appError");
 const { catchAsync } = require("../utils/catch");
+const factory = require("./handlerFactory");
 
 const aliasTopTours = function (req, res, next) {
   req.query.limit = 5;
@@ -78,19 +79,21 @@ const updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-const deleteTour = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const tour = await Tour.findByIdAndDelete(id);
+const deleteTour = factory.deleteOne(Tour);
 
-  if (!tour) {
-    return next(new AppError("No tour found with that ID", 404));
-  }
+// const deleteTour = catchAsync(async (req, res, next) => {
+//   const { id } = req.params;
+//   const tour = await Tour.findByIdAndDelete(id);
 
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-});
+//   if (!tour) {
+//     return next(new AppError("No tour found with that ID", 404));
+//   }
+
+//   res.status(204).json({
+//     status: "success",
+//     data: null,
+//   });
+// });
 
 const getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([

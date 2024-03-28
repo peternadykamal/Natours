@@ -1,6 +1,7 @@
 const { catchAsync } = require("../utils/catch");
 const AppError = require("../utils/appError");
 const User = require("../models/userModel");
+const factory = require("./handlerFactory");
 
 const notDefinedRoute = function (req, res) {
   res.status(500).json({
@@ -13,7 +14,7 @@ const getAllUsers = notDefinedRoute;
 const createUser = notDefinedRoute;
 const getUser = notDefinedRoute;
 const updateUser = notDefinedRoute;
-const deleteUser = notDefinedRoute;
+const deleteUser = factory.deleteOne(User);
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
