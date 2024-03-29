@@ -36,6 +36,11 @@ const reviews = JSON.parse(
   fs.readFileSync(`${__dirname}/reviews.json`, "utf-8")
 );
 
+// add to each user, passwordChangedAt to be right now
+users.forEach((user) => {
+  user.passwordChangedAt = Date.now();
+});
+
 // Import data into db
 const importData = async () => {
   try {

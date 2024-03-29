@@ -37,7 +37,6 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please confirm your password"],
     validate: {
       validator: async function (val) {
-        console.log("from password confirm validator");
         const doc = await getDocForValidation(this);
         return val === doc.password;
       },
