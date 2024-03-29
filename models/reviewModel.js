@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const AppError = require("../utils/appError");
-const Tour = require("../models/tourModel");
+const Tour = require("./tourModel");
 
 const reviewSchema = new mongoose.Schema(
   {
