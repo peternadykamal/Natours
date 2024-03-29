@@ -82,8 +82,16 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
       },
     ])
   )[0];
-
   console.log(stats);
+
+  if (!stats) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: 0,
+      ratingsQuantity: 0,
+    });
+
+    return;
+  }
 
   await Tour.findByIdAndUpdate(tourId, {
     ratingsAverage: stats.avgRating,
@@ -93,6 +101,19 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 
 reviewSchema.post("save", async function (docs, next) {
   await this.constructor.calcAverageRatings(this.tour);
+
+  // this === docs: the current document that the action is being performed on
+  // this.constructor === this.model(): the model that created the document
+
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async (docs, next) => {
+  if (docs) await docs.constructor.calcAverageRatings(docs.tour);
+
+  // this: current query object (if you are using normal function)
+  // docs: the document that the action was performed on
+  // docs.constructor === docs.model() == this.model: the model that created the document
 
   next();
 });
