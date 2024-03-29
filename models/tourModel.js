@@ -218,6 +218,9 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 const Tour = mongoose.model("Tour", tourSchema);
 
 module.exports = Tour;
