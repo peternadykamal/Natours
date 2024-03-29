@@ -199,7 +199,14 @@ tourSchema.pre("aggregate", function (next) {
   // this object refers to the current aggregate object
   // this.pipeline() will show the array of the stages in the aggregate pipeline
   // which we can add new stages to it
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+
+  if (!(this.pipeline().length > 0 && "$geoNear" in this.pipeline()[0])) {
+    // because geoNear must be the first stage in the pipeline
+    // we can't add any stage before it, so we can't add the $match stage
+    this.pipeline().unshift({
+      $match: { secretTour: { $ne: true } },
+    });
+  }
   next();
 });
 
