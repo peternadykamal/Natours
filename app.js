@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
@@ -12,12 +13,10 @@ const reviewRouter = require("./routes/reviewRoutes");
 const AppError = require("./utils/appError");
 const { globalErrorHandler } = require("./controllers/errorController");
 
-// the main purpose of the app.js is
-// 1. to create an express app
-// 2. to define the middleware
-// 3. to define the main app routes
-
 const app = express();
+
+app.set("view engine", "pug"); // setting the view engine to pug
+app.set("views", path.join(__dirname, "views"));
 
 // MIDDLEWARE
 
@@ -51,7 +50,7 @@ app.use(
 );
 
 // middleware to serve static files
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, "public")));
 
 // middleware to log the request to the console
 if (process.env.NODE_ENV === "development") {
@@ -79,6 +78,9 @@ app.use((req, res, next) => {
 });
 
 // mounting the routers to the app on a specific route
+app.get("/", (req, res) => {
+  res.status(200).render("base");
+});
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
