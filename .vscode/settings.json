@@ -1,0 +1,12 @@
+{
+  "runItOn": {
+    "commands": [
+      {
+        // run on pug files run vscode pugbeautify.execute
+        "match": "\\.pug$",
+        "isShellCommand": false,
+        "cmd": "pugbeautify.execute"
+      }
+    ]
+  }
+}
