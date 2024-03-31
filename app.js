@@ -79,7 +79,10 @@ app.use((req, res, next) => {
 
 // mounting the routers to the app on a specific route
 app.get("/", (req, res) => {
-  res.status(200).render("base");
+  res.status(200).render("base", {
+    tour: "the forest hiker",
+    user: "Jonas",
+  });
 });
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
