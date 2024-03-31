@@ -2,11 +2,11 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 
+const helmet = require("./utils/customHelmetFn");
 const viewRouter = require("./routes/viewRoutes");
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
@@ -71,7 +71,7 @@ app.use(
 );
 
 // adding security HTTP headers using helmet
-app.use(helmet());
+app.use(helmet);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
