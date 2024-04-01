@@ -2,17 +2,25 @@
   "name": "natours",
   "version": "1.0.0",
   "description": "learning node, express and mongoDB",
-  "main": "index.js",
+  "main": "app.js",
+  "targets": {
+    "main": false
+  },
+  "browserslist": "> 0.5%",
   "scripts": {
     "start": "nodemon --legacy-watch server.js",
     "debug": "nodemon --inspect --legacy-watch server.js",
     "start:dev": "SET NODE_ENV=development&&nodemon server.js",
-    "start:prod": "SET NODE_ENV=production&&node server.js"
+    "start:prod": "SET NODE_ENV=production&&node server.js",
+    "watch:js": "parcel watch public/js/index.js --dist-dir public/js/bundled --cache-dir public/js/bundled/.parcel-cache",
+    "build:js": "parcel build public/js/index.js --dist-dir public/js/bundled --cache-dir public/js/bundled/.parcel-cache"
   },
   "keywords": [],
   "author": "Peter Nady",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
@@ -31,6 +39,7 @@
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
+    "buffer": "^6.0.3",
     "eslint": "^8.29.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -40,6 +49,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "parcel": "^2.12.0",
     "prettier": "^2.8.1"
   },
   "engines": {

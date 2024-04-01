@@ -1,17 +1,12 @@
 const helmet = require("helmet");
 
 const { connectSrcUrls, scriptSrcUrls, styleSrcUrls, fontSrcUrls } = {
-  scriptSrcUrls: [
-    "https://unpkg.com/",
-    "https://tile.openstreetmap.org",
-    "https://cdn.jsdelivr.net",
-  ],
+  scriptSrcUrls: ["https://tile.openstreetmap.org"],
   styleSrcUrls: [
-    "https://unpkg.com/",
     "https://tile.openstreetmap.org",
     "https://fonts.googleapis.com/",
   ],
-  connectSrcUrls: ["https://unpkg.com/", "https://tile.openstreetmap.org"],
+  connectSrcUrls: ["https://tile.openstreetmap.org"],
   fontSrcUrls: ["fonts.googleapis.com", "fonts.gstatic.com"],
 };
 
