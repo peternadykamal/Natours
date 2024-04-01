@@ -121,6 +121,32 @@ const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// the difference between isLoggedIn and protect is that protect works as a security wall
+// only authenticated users can pass through it, while isLoggedIn provide user info in req.locals
+// if user is logged in
+const isLoggedIn = catchAsync(async (req, res, next) => {
+  if (!req.cookies.jwt) {
+    return next();
+  }
+
+  // 1) verify token
+  const decoded = await util.promisify(jwt.verify)(
+    req.cookies.jwt,
+    process.env.JWT_SECRET
+  );
+
+  // 2) check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) return next();
+
+  // 3) check if user changed password after the token was issued
+  if (currentUser.isPasswordChangeAfterJWTIssued(decoded.iat)) return next();
+
+  // there is a logged in user
+  res.locals.user = currentUser;
+  next();
+});
+
 const restrictTo = (...roles) =>
   catchSync((req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -214,6 +240,7 @@ module.exports = {
   login,
   logout,
   protect,
+  isLoggedIn,
   restrictTo,
   forgotPassword,
   resetPassword,

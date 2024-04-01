@@ -12,9 +12,14 @@ const login = async (email, password) => {
       },
     });
 
-    console.log(res);
+    if (res.data.status === "success") {
+      alert("logged in successfuly");
+      window.setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    }
   } catch (err) {
-    console.log(err.response.data);
+    console.log(err.response.data.message);
   }
 };
 
