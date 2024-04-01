@@ -10,8 +10,10 @@
   "scripts": {
     "start": "nodemon --legacy-watch server.js",
     "debug": "nodemon --inspect --legacy-watch server.js",
-    "start:dev": "SET NODE_ENV=development&&nodemon server.js",
-    "start:prod": "SET NODE_ENV=production&&node server.js",
+    "start:dev": "NODE_ENV=development nodemon server.js",
+    "start:prod": "NODE_ENV=production node server.js",
+    "start:dev-win": "SET NODE_ENV=development&&nodemon server.js",
+    "start:prod-win": "SET NODE_ENV=production&&node server.js",
     "watch:js": "parcel watch public/js/index.js --dist-dir public/js/bundled --cache-dir public/js/bundled/.parcel-cache",
     "build:js": "parcel build public/js/index.js --dist-dir public/js/bundled --cache-dir public/js/bundled/.parcel-cache"
   },

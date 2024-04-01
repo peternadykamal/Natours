@@ -79,7 +79,7 @@ app.use(helmet);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.cookies);
+  if (Object.entries(req.cookies).length) console.log(req.cookies);
   next();
 });
 

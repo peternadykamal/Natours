@@ -20,6 +20,6 @@ if (formEl) {
   });
 }
 
-if(logOutBtn){
+if (logOutBtn) {
   logOutBtn.addEventListener("click", logout);
 }

@@ -7610,7 +7610,7 @@ const login = async (email, password)=>{
             (0, _alertsDefault.default)("success", "logged in successfuly");
             window.setTimeout(()=>{
                 window.location.href = "/";
-            }, 1500);
+            }, 800);
         }
     } catch (err) {
         (0, _alertsDefault.default)("error", err.response.data.message);
