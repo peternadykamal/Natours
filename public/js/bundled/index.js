@@ -587,11 +587,11 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _polyfill = require("@babel/polyfill");
 var _login = require("./login");
-var _loginDefault = parcelHelpers.interopDefault(_login);
 var _leaflet = require("./leaflet");
 var _leafletDefault = parcelHelpers.interopDefault(_leaflet);
 const mapEl = document.getElementById("map");
 const formEl = document.querySelector(".form");
+const logOutBtn = document.querySelector(".nav__el--logout");
 if (mapEl) {
     const locations = JSON.parse(mapEl.dataset.locations);
     (0, _leafletDefault.default)(locations);
@@ -600,8 +600,9 @@ if (formEl) formEl.addEventListener("submit", (e)=>{
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    (0, _loginDefault.default)(email, password);
+    (0, _login.login)(email, password);
 });
+if (logOutBtn) logOutBtn.addEventListener("click", (0, _login.logout));
 
 },{"@babel/polyfill":"kCCBs","./login":"bXKkS","./leaflet":"7i3sW","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx"}],"kCCBs":[function(require,module,exports) {
 "use strict";
@@ -7589,6 +7590,8 @@ module.exports = function(it, key) {
 },{}],"bXKkS":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "login", ()=>login);
+parcelHelpers.export(exports, "logout", ()=>logout);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
@@ -7613,7 +7616,17 @@ const login = async (email, password)=>{
         (0, _alertsDefault.default)("error", err.response.data.message);
     }
 };
-exports.default = login;
+const logout = async ()=>{
+    try {
+        const res = await (0, _axiosDefault.default)({
+            method: "GET",
+            url: "/api/v1/users/logout"
+        });
+        if (res.data.status === "success") window.location.reload(true);
+    } catch (error) {
+        (0, _alertsDefault.default)("error", "Error logging out! Try again.");
+    }
+};
 
 },{"axios":"9EQWr","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx","./alerts":"7OVVV"}],"9EQWr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
