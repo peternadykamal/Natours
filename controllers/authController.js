@@ -75,14 +75,27 @@ const logout = catchSync((req, res) => {
 
 const protect = catchAsync(async (req, res, next) => {
   // 1) getting the token and check if it's there
-  const { headers } = req;
-  if (!headers.authorization || !headers.authorization.startsWith("Bearer")) {
+  const { headers, cookies } = req;
+  let token = "";
+
+  // check if there is a token in either headers or cookies, send error if not
+  const isAuthorizationMissing =
+    (!headers.authorization || !headers.authorization.startsWith("Bearer")) &&
+    !cookies.jwt;
+  if (isAuthorizationMissing) {
     throw new AppError(
       "You are not logged in! Please log in to get access.",
       401
     );
   }
-  const token = headers.authorization.split(" ")[1];
+
+  // if the token is in the headers, exclude the "Bearer" and get the token
+  if (headers.authorization) {
+    token = headers.authorization.split(" ")[1];
+  } else {
+    // else then the token is in the cookies
+    token = cookies.jwt;
+  }
 
   // 2) verification token asynchronously
   const decoded = await util.promisify(jwt.verify)(

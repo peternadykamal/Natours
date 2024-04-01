@@ -1,7 +1,11 @@
 const helmet = require("helmet");
 
 const { connectSrcUrls, scriptSrcUrls, styleSrcUrls, fontSrcUrls } = {
-  scriptSrcUrls: ["https://unpkg.com/", "https://tile.openstreetmap.org"],
+  scriptSrcUrls: [
+    "https://unpkg.com/",
+    "https://tile.openstreetmap.org",
+    "https://cdn.jsdelivr.net",
+  ],
   styleSrcUrls: [
     "https://unpkg.com/",
     "https://tile.openstreetmap.org",

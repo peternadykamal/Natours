@@ -5,6 +5,7 @@ const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cookieParser = require("cookie-parser");
 
 const helmet = require("./utils/customHelmetFn");
 const viewRouter = require("./routes/viewRoutes");
@@ -28,6 +29,9 @@ app.use(
     limit: "10kb",
   })
 );
+
+// middleware to parse the cookies received from the request
+app.use(cookieParser());
 
 // data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -75,6 +79,7 @@ app.use(helmet);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
   next();
 });
 
