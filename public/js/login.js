@@ -31,7 +31,8 @@ const logout = async () => {
     });
 
     if (res.data.status === "success") {
-      window.location.reload(true);
+      // window.location.reload(true);
+      window.location.href = "/";
     }
   } catch (error) {
     showAlert("error", "Error logging out! Try again.");

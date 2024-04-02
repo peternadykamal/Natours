@@ -7622,7 +7622,8 @@ const logout = async ()=>{
             method: "GET",
             url: "/api/v1/users/logout"
         });
-        if (res.data.status === "success") window.location.reload(true);
+        if (res.data.status === "success") // window.location.reload(true);
+        window.location.href = "/";
     } catch (error) {
         (0, _alertsDefault.default)("error", "Error logging out! Try again.");
     }
