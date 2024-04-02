@@ -1,4 +1,5 @@
 const multer = require("multer");
+const sharp = require("sharp");
 
 // only images multer filter
 const imageFilter = (req, file, cb) => {
@@ -9,26 +10,29 @@ const imageFilter = (req, file, cb) => {
   }
 };
 
-const userStorage = multer.diskStorage({
-  destination: (rq, file, cb) => {
-    cb(null, "public/img/users");
-  },
-  filename: (rq, file, cb) => {
-    // user-userId.jpeg as each user can have only one profile picture
-    const fileExtension = file.mimetype.split("/")[1];
-    const filename = `user-${rq.user.id}.${fileExtension}`;
-
-    cb(null, filename);
-  },
-});
+const userStorage = multer.memoryStorage();
 
 const upload = multer({
   storage: userStorage,
   fileFilter: imageFilter,
 });
+const resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user.id}.jpeg`;
+
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+};
 
 const uploadUserPhoto = upload.single("photo");
 
 module.exports = {
+  resizeUserPhoto,
   uploadUserPhoto,
 };

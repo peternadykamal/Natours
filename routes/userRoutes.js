@@ -1,7 +1,7 @@
 const express = require("express");
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
-const { uploadUserPhoto } = require("../controllers/uploadFilesController");
+const uploadFilesController = require("../controllers/uploadFilesController");
 
 // user router
 const router = express.Router();
@@ -20,7 +20,11 @@ router.patch("/updatePassword", authController.updatePassword);
 router
   .route("/me")
   .get(userController.getMe)
-  .patch(uploadUserPhoto, userController.updateMe)
+  .patch(
+    uploadFilesController.uploadUserPhoto,
+    uploadFilesController.resizeUserPhoto,
+    userController.updateMe
+  )
   .delete(userController.deleteMe);
 
 router.use(authController.restrictTo("admin"));
