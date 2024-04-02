@@ -594,6 +594,7 @@ const mapEl = document.getElementById("map");
 const formLoginEl = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const formUserDataEl = document.querySelector(".form-user-data");
+const formUserPasswordEl = document.querySelector(".form-user-settings");
 if (mapEl) {
     const locations = JSON.parse(mapEl.dataset.locations);
     (0, _leafletDefault.default)(locations);
@@ -609,6 +610,19 @@ if (formUserDataEl) formUserDataEl.addEventListener("submit", (e)=>{
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     (0, _updateSettings.updateUserData)(name, email);
+});
+if (formUserPasswordEl) formUserPasswordEl.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const passwordUpdateBtn = document.querySelector(".btn--save-password");
+    const passwordCurrentEl = document.getElementById("password-current");
+    const passwordEl = document.getElementById("password");
+    const passwordConfirmEl = document.getElementById("password-confirm");
+    passwordUpdateBtn.textContent = "Updating....";
+    await (0, _updateSettings.updateUserPassword)(passwordCurrentEl.value, passwordEl.value, passwordConfirmEl.value);
+    passwordCurrentEl.value = "";
+    passwordEl.value = "";
+    passwordConfirmEl.value = "";
+    passwordUpdateBtn.textContent = "Save password";
 });
 if (logOutBtn) logOutBtn.addEventListener("click", (0, _login.logout));
 
@@ -22702,8 +22716,8 @@ exports.default = displayMap;
 },{}],"eEx5z":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-// eslint-disable-next-line import/prefer-default-export
 parcelHelpers.export(exports, "updateUserData", ()=>updateUserData);
+parcelHelpers.export(exports, "updateUserPassword", ()=>updateUserPassword);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
@@ -22718,12 +22732,23 @@ const updateUserData = async (name, email)=>{
                 email: email
             }
         });
-        if (res.data.status === "success") {
-            (0, _alertsDefault.default)("success", "your data updated successfully");
-            window.setTimeout(()=>{
-                window.location.href = "/";
-            }, 800);
-        }
+        if (res.data.status === "success") (0, _alertsDefault.default)("success", "your data updated successfully");
+    } catch (err) {
+        (0, _alertsDefault.default)("error", err.response.data.message);
+    }
+};
+const updateUserPassword = async (password, newPassword, newPasswordConfirm)=>{
+    try {
+        const res = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url: "/api/v1/users/updatePassword",
+            data: {
+                password,
+                newPassword,
+                newPasswordConfirm
+            }
+        });
+        if (res.data.status === "success") (0, _alertsDefault.default)("success", "your password updated successfully");
     } catch (err) {
         (0, _alertsDefault.default)("error", err.response.data.message);
     }
