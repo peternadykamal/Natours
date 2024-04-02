@@ -14,8 +14,9 @@ const aliasTopTours = function (req, res, next) {
 const getAllTours = factory.getAll(Tour);
 const getTour = factory.getOne(Tour, { path: "reviews" });
 const createTour = factory.createOne(Tour);
-const updateTour = factory.updateOne(Tour);
 const deleteTour = factory.deleteOne(Tour);
+
+const updateTour = factory.updateOne(Tour);
 
 const getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([

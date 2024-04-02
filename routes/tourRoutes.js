@@ -2,6 +2,7 @@ const express = require("express");
 const tourController = require("../controllers/tourController");
 const authController = require("../controllers/authController");
 const reviewRouter = require("./reviewRoutes");
+const uploadFilesController = require("../controllers/uploadFilesController");
 
 // tour router
 const router = express.Router();
@@ -44,6 +45,8 @@ router
   .patch(
     authController.protect,
     authController.restrictTo("admin", "lead-guide"),
+    uploadFilesController.uploadTourImages,
+    uploadFilesController.resizeTourImages,
     tourController.updateTour
   )
   .delete(

@@ -11,12 +11,14 @@ const imageFilter = (req, file, cb) => {
   }
 };
 
+// store file in memory, it then can be accessed in req.file.buffer
 const userStorage = multer.memoryStorage();
 
 const upload = multer({
   storage: userStorage,
   fileFilter: imageFilter,
 });
+
 const resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
@@ -31,9 +33,22 @@ const resizeUserPhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
+const resizeTourImages = catchAsync(async (req, res, next) => {
+  console.log(req.files);
+  next();
+});
+
 const uploadUserPhoto = catchSync(upload.single("photo"));
+const uploadTourImages = catchSync(
+  upload.fields([
+    { name: "imageCover", maxCount: 1 },
+    { name: "images", maxCount: 3 },
+  ])
+);
 
 module.exports = {
   resizeUserPhoto,
+  resizeTourImages,
   uploadUserPhoto,
+  uploadTourImages,
 };
