@@ -607,9 +607,14 @@ if (formLoginEl) formLoginEl.addEventListener("submit", (e)=>{
 });
 if (formUserDataEl) formUserDataEl.addEventListener("submit", (e)=>{
     e.preventDefault();
+    const formObj = new FormData();
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
-    (0, _updateSettings.updateUserData)(name, email);
+    const photo = document.getElementById("photo").files[0];
+    formObj.append("name", name);
+    formObj.append("email", email);
+    formObj.append("photo", photo);
+    (0, _updateSettings.updateUserData)(formObj);
 });
 if (formUserPasswordEl) formUserPasswordEl.addEventListener("submit", async (e)=>{
     e.preventDefault();
@@ -22722,16 +22727,14 @@ var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
 var _alertsDefault = parcelHelpers.interopDefault(_alerts);
-const updateUserData = async (name, email)=>{
+const updateUserData = async (data)=>{
     try {
         const res = await (0, _axiosDefault.default)({
             method: "PATCH",
             url: "/api/v1/users/me",
-            data: {
-                name: name,
-                email: email
-            }
+            data
         });
+        console.log("as;dlfsd");
         if (res.data.status === "success") (0, _alertsDefault.default)("success", "your data updated successfully");
     } catch (err) {
         (0, _alertsDefault.default)("error", err.response.data.message);
