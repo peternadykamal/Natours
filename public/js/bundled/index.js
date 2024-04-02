@@ -587,24 +587,32 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _polyfill = require("@babel/polyfill");
 var _login = require("./login");
+var _updateSettings = require("./updateSettings");
 var _leaflet = require("./leaflet");
 var _leafletDefault = parcelHelpers.interopDefault(_leaflet);
 const mapEl = document.getElementById("map");
-const formEl = document.querySelector(".form--login");
+const formLoginEl = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
+const formUserDataEl = document.querySelector(".form-user-data");
 if (mapEl) {
     const locations = JSON.parse(mapEl.dataset.locations);
     (0, _leafletDefault.default)(locations);
 }
-if (formEl) formEl.addEventListener("submit", (e)=>{
+if (formLoginEl) formLoginEl.addEventListener("submit", (e)=>{
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     (0, _login.login)(email, password);
 });
+if (formUserDataEl) formUserDataEl.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    (0, _updateSettings.updateUserData)(name, email);
+});
 if (logOutBtn) logOutBtn.addEventListener("click", (0, _login.logout));
 
-},{"@babel/polyfill":"kCCBs","./login":"bXKkS","./leaflet":"7i3sW","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx"}],"kCCBs":[function(require,module,exports) {
+},{"@babel/polyfill":"kCCBs","./login":"bXKkS","./leaflet":"7i3sW","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx","./updateSettings":"eEx5z"}],"kCCBs":[function(require,module,exports) {
 "use strict";
 require("f50de0aa433a589b");
 var _global = _interopRequireDefault(require("4142986752a079d4"));
@@ -22691,6 +22699,36 @@ exports.default = displayMap;
     window.L = exports1;
 }); //# sourceMappingURL=leaflet-src.js.map
 
-},{}]},["ezCx4","jVRkg"], "jVRkg", "parcelRequire11c7")
+},{}],"eEx5z":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// eslint-disable-next-line import/prefer-default-export
+parcelHelpers.export(exports, "updateUserData", ()=>updateUserData);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alerts = require("./alerts");
+var _alertsDefault = parcelHelpers.interopDefault(_alerts);
+const updateUserData = async (name, email)=>{
+    try {
+        const res = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url: "/api/v1/users/me",
+            data: {
+                name: name,
+                email: email
+            }
+        });
+        if (res.data.status === "success") {
+            (0, _alertsDefault.default)("success", "your data updated successfully");
+            window.setTimeout(()=>{
+                window.location.href = "/";
+            }, 800);
+        }
+    } catch (err) {
+        (0, _alertsDefault.default)("error", err.response.data.message);
+    }
+};
+
+},{"axios":"9EQWr","./alerts":"7OVVV","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx"}]},["ezCx4","jVRkg"], "jVRkg", "parcelRequire11c7")
 
 //# sourceMappingURL=index.js.map
