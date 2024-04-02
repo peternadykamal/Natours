@@ -590,7 +590,7 @@ var _login = require("./login");
 var _leaflet = require("./leaflet");
 var _leafletDefault = parcelHelpers.interopDefault(_leaflet);
 const mapEl = document.getElementById("map");
-const formEl = document.querySelector(".form");
+const formEl = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 if (mapEl) {
     const locations = JSON.parse(mapEl.dataset.locations);

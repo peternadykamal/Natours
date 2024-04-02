@@ -30,6 +30,14 @@ app.use(
   })
 );
 
+// middleware to parse the body of the request to urlencoded data
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "10kb",
+  })
+);
+
 // middleware to parse the cookies received from the request
 app.use(cookieParser());
 
