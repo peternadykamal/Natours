@@ -25,9 +25,6 @@ const getMe = (req, res, next) => {
 };
 
 const updateMe = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
-
   // 1) create error if user POSTS password data
   if (req.body.password || req.body.passwordConfirm) {
     throw new AppError(
@@ -38,8 +35,10 @@ const updateMe = catchAsync(async (req, res, next) => {
 
   // 2) filter out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, "name", "email");
+  // if there is a file in the request, add the photo field to the filteredBody
+  if (req.file) filteredBody.photo = req.file.filename;
 
-  // 2) update user document
+  // 3) update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
