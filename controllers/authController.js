@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { catchAsync, catchSync } = require("../utils/catch");
 const AppError = require("../utils/appError");
-const sendEmail = require("../utils/email");
+const Email = require("../utils/email");
 
 const signInToken = function (id) {
   // for the best encryption for the signature, the secret key must be at least 32 characters
@@ -42,6 +42,7 @@ const sendResponseWithJWT = (
 
 const signup = catchAsync(async (req, res, next) => {
   // TODO: check if the user already exists but is inactive
+
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -53,6 +54,10 @@ const signup = catchAsync(async (req, res, next) => {
   // we need to delete the password and active status from the output
   newUser.password = undefined;
   newUser.active = undefined;
+
+  // send welcome email to user
+  const url = `${req.protocol}://${req.get("host")}/me`;
+  await new Email(newUser, url).sendWelcome();
 
   sendResponseWithJWT(newUser, 201, res, true);
 });
@@ -182,16 +187,10 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     "host"
   )}/api/v1/users/resetPassword/${resetToken}`;
 
-  const message = `Forget you password? Submit a PATCH request with your new password and passwordConform to ${resetURL}\nIf you didn't forget your password please ignore this email`;
-
   try {
     // there might happen an error while sending the email,
     // in this case we need delete password reset token and password reset expires from database
-    await sendEmail({
-      email: user.email,
-      subject: "Your passwrod reset token {valid for 10 minutes}",
-      message: message,
-    });
+    await new Email(user, resetURL).sendPasswordReset();
   } catch (err) {
     console.log(err);
     await user.deletePasswordResetToken();
