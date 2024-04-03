@@ -588,6 +588,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _polyfill = require("@babel/polyfill");
 var _login = require("./login");
 var _updateSettings = require("./updateSettings");
+var _stripe = require("./stripe");
+var _stripeDefault = parcelHelpers.interopDefault(_stripe);
 var _leaflet = require("./leaflet");
 var _leafletDefault = parcelHelpers.interopDefault(_leaflet);
 const mapEl = document.getElementById("map");
@@ -595,6 +597,7 @@ const formLoginEl = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const formUserDataEl = document.querySelector(".form-user-data");
 const formUserPasswordEl = document.querySelector(".form-user-settings");
+const bookTourBtn = document.getElementById("book-tour");
 if (mapEl) {
     const locations = JSON.parse(mapEl.dataset.locations);
     (0, _leafletDefault.default)(locations);
@@ -630,8 +633,14 @@ if (formUserPasswordEl) formUserPasswordEl.addEventListener("submit", async (e)=
     passwordUpdateBtn.textContent = "Save password";
 });
 if (logOutBtn) logOutBtn.addEventListener("click", (0, _login.logout));
+if (bookTourBtn) bookTourBtn.addEventListener("click", async (e)=>{
+    e.target.textContent = "Processing...";
+    const { tourId } = e.target.dataset;
+    await (0, _stripeDefault.default)(tourId);
+    e.target.textContent = "Book tour now!";
+});
 
-},{"@babel/polyfill":"kCCBs","./login":"bXKkS","./leaflet":"7i3sW","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx","./updateSettings":"eEx5z"}],"kCCBs":[function(require,module,exports) {
+},{"@babel/polyfill":"kCCBs","./login":"bXKkS","./leaflet":"7i3sW","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx","./updateSettings":"eEx5z","./stripe":"1Hd4M"}],"kCCBs":[function(require,module,exports) {
 "use strict";
 require("f50de0aa433a589b");
 var _global = _interopRequireDefault(require("4142986752a079d4"));
@@ -22757,6 +22766,31 @@ const updateUserPassword = async (password, newPassword, newPasswordConfirm)=>{
     }
 };
 
-},{"axios":"9EQWr","./alerts":"7OVVV","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx"}]},["ezCx4","jVRkg"], "jVRkg", "parcelRequire11c7")
+},{"axios":"9EQWr","./alerts":"7OVVV","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx"}],"1Hd4M":[function(require,module,exports) {
+/* global Stripe */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alerts = require("./alerts");
+var _alertsDefault = parcelHelpers.interopDefault(_alerts);
+const publicKey = document.getElementById("stripe-js").dataset.key;
+// TODO: there is might be no need to import Stripe, so if that the case
+// then remove it from this file and the tour.pug file also.
+// also remove the primarykey from viewsController.js, env file and customHelmetFn.js
+const stripe = Stripe(publicKey);
+const bookTour = async (tourId)=>{
+    try {
+        // 1) Get checkout session from API
+        const { checkoutUrl } = (await (0, _axiosDefault.default)(`/api/v1/bookings/checkout-session/${tourId}`)).data;
+        // 2) redirect to checkout page
+        window.location.assign(checkoutUrl);
+    } catch (err) {
+        console.log(err);
+        (0, _alertsDefault.default)("error", "Error processing payment! Try again.");
+    }
+};
+exports.default = bookTour;
+
+},{"axios":"9EQWr","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx","./alerts":"7OVVV"}]},["ezCx4","jVRkg"], "jVRkg", "parcelRequire11c7")
 
 //# sourceMappingURL=index.js.map

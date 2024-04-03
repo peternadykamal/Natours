@@ -1,6 +1,7 @@
 import "@babel/polyfill";
 import { login, logout } from "./login";
 import { updateUserData, updateUserPassword } from "./updateSettings";
+import bookTour from "./stripe";
 import displayMap from "./leaflet";
 
 const mapEl = document.getElementById("map");
@@ -8,6 +9,7 @@ const formLoginEl = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const formUserDataEl = document.querySelector(".form-user-data");
 const formUserPasswordEl = document.querySelector(".form-user-settings");
+const bookTourBtn = document.getElementById("book-tour");
 
 if (mapEl) {
   const locations = JSON.parse(mapEl.dataset.locations);
@@ -65,4 +67,13 @@ if (formUserPasswordEl) {
 
 if (logOutBtn) {
   logOutBtn.addEventListener("click", logout);
+}
+
+if (bookTourBtn) {
+  bookTourBtn.addEventListener("click", async (e) => {
+    e.target.textContent = "Processing...";
+    const { tourId } = e.target.dataset;
+    await bookTour(tourId);
+    e.target.textContent = "Book tour now!";
+  });
 }

@@ -3,6 +3,7 @@ include _reviewCard
 
 block append head
   link(rel='stylesheet' href='/js/leaflet/leaflet.css' )
+  script#stripe-js( src="https://js.stripe.com/v3/" data-key=`${stripePublicKey}`)
 
 
 mixin overviewBox(label, text, icon)
@@ -96,4 +97,8 @@ block content
       .cta__content
         h2.heading-secondary What are you waiting for?
         p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!` 
-        button.btn.btn--green.span-all-rows Book tour now!
+
+        - if(user && user.role === 'user')
+          button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour._id}`) Book tour now!
+        - else
+          a.btn.btn--green.span-all-rows(href='/login') Log in to book tour
