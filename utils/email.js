@@ -12,8 +12,17 @@ class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === "production") {
-      // sendgrid
-      return 1;
+      // for testing you can use mailsac.com to create a fake email
+      // and sign up a new user
+      return nodeMailer.createTransport({
+        host: process.env.EMAIL_HOST_PROD,
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USERNAME_PROD,
+          pass: process.env.EMAIL_PASSWORD_PROD,
+        },
+      });
     }
 
     return nodeMailer.createTransport({
