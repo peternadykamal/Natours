@@ -19,7 +19,6 @@ const { globalErrorHandler } = require("./controllers/errorController");
 
 const app = express();
 app.set("trust proxy", "loopback, linklocal, uniquelocal");
-app.get("/ip", (request, response) => response.send(request.ip));
 
 app.set("view engine", "pug"); // setting the view engine to pug
 app.set("views", path.join(__dirname, "views"));
