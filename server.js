@@ -46,3 +46,15 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
+// SIGTERM is a signal that is sent to request the process to terminate
+// This signal is used to request a graceful termination of the
+// process. This will allow the process to clean up any resources and
+// save state if needed.
+// this signal is sent by the hosting service to stop the process
+process.on("SIGTERM", () => {
+  console.log("SIGTERM RECEIVED. Shutting down gracefully");
+  server.close(() => {
+    console.log("Process terminated");
+  });
+});
