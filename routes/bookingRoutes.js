@@ -7,24 +7,25 @@ const authController = require("../controllers/authController");
 // precedence.
 const router = express.Router();
 
+router.use(authController.protect);
+
 router
   .route("/checkout-session/:tourId")
-  .get(authController.protect, bookingController.getCheckoutSession);
+  .get(bookingController.getCheckoutSession);
+
+router.route("/success").get(bookingController.createBookingCheckout);
+
+router.use(authController.restrictTo("admin", "lead-guide"));
 
 router
-  .route("/success")
-  .get(authController.protect, bookingController.createBookingCheckout);
+  .route("/")
+  .get(bookingController.getAllBookings)
+  .post(bookingController.createBooking);
 
-// router
-//   .route("/:id")
-//   .get(reviewController.getReview)
-//   .patch(
-//     authController.restrictTo("user", "admin"),
-//     reviewController.updateReview
-//   )
-//   .delete(
-//     authController.restrictTo("user", "admin"),
-//     reviewController.deleteReview
-//   );
+router
+  .route("/:id")
+  .get(bookingController.getBooking)
+  .patch(bookingController.updateBooking)
+  .delete(bookingController.deleteBooking);
 
 module.exports = router;
