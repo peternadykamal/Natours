@@ -48,9 +48,7 @@ const createBookingCheckout = catchAsync(async (req, res, next) => {
   if (!tourId || !price) return next(new AppError("Invalid session", 400));
 
   await Booking.create({ tour: tourId, user: req.user.id, price: price / 100 });
-  res.status(200).json({
-    status: "success",
-  });
+  res.redirect("/my-tours");
 });
 
 module.exports = {

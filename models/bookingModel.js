@@ -37,8 +37,10 @@ bookingSchema.pre("save", async function (next) {
 bookingSchema.pre(/^find/, function (next) {
   this.populate("user").populate({
     path: "tour",
-    select: "name",
+    select:
+      "name difficulty duration summary startLocation startDates locations maxGroupSize price ratingsAverage ratingsQuantity slug imageCover",
   });
+  next();
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);
