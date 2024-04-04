@@ -16,6 +16,7 @@ const signInToken = function (id) {
 const sendResponseWithJWT = (
   user,
   statusCode,
+  req,
   res,
   provideUserInBody = false
 ) => {
@@ -28,7 +29,9 @@ const sendResponseWithJWT = (
   const cookieOptions = {
     expires: new Date(Date.now() + expiresIn),
     httpOnly: true,
-    ...(process.env.NODE_ENV === "production" ? { secure: true } : undefined),
+    ...(req.secure || req.headers["x-forwarded-proto"] === "https"
+      ? { secure: true }
+      : undefined),
   };
 
   res.cookie("jwt", token, cookieOptions);
@@ -59,14 +62,14 @@ const signup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get("host")}/me`;
   await new Email(newUser, url).sendWelcome();
 
-  sendResponseWithJWT(newUser, 201, res, true);
+  sendResponseWithJWT(newUser, 201, req, res, true);
 });
 
 const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findUserAndValidatePassword(email, password);
 
-  sendResponseWithJWT(user, 200, res, false);
+  sendResponseWithJWT(user, 200, req, res, false);
 });
 
 const logout = catchSync((req, res) => {
@@ -221,7 +224,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
   await user.resetPassword(req.body.password, req.body.passwordConfirm);
 
   // 4) log the user in
-  sendResponseWithJWT(user, 200, res, false);
+  sendResponseWithJWT(user, 200, req, res, false);
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
@@ -235,7 +238,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
   await user.resetPassword(req.body.newPassword, req.body.newPasswordConfirm);
 
   // 3) log user in, send JWT
-  sendResponseWithJWT(user, 200, res, false);
+  sendResponseWithJWT(user, 200, req, res, false);
 });
 
 module.exports = {
