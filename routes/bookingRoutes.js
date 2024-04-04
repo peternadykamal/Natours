@@ -11,6 +11,10 @@ router
   .route("/checkout-session/:tourId")
   .get(authController.protect, bookingController.getCheckoutSession);
 
+router
+  .route("/success")
+  .get(authController.protect, bookingController.createBookingCheckout);
+
 // router
 //   .route("/:id")
 //   .get(reviewController.getReview)

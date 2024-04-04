@@ -1,7 +1,8 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { catchAsync } = require("../utils/catch");
 const Tour = require("../models/tourModel");
-// const AppError = require("../utils/appError");
+const Booking = require("../models/bookingModel");
+const AppError = require("../utils/appError");
 // const User = require("../models/userModel");
 // const factory = require("./handlerFactory");
 
@@ -13,7 +14,7 @@ const getCheckoutSession = catchAsync(async (req, res, next) => {
   const domain = `${req.protocol}://${req.get("host")}`;
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    success_url: `${domain}`,
+    success_url: `${domain}/api/v1/bookings/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${domain}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -41,6 +42,18 @@ const getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
+const createBookingCheckout = catchAsync(async (req, res, next) => {
+  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+  const { client_reference_id: tourId, amount_total: price } = session;
+  if (!tourId || !price) return next(new AppError("Invalid session", 400));
+
+  await Booking.create({ tour: tourId, user: req.user.id, price: price / 100 });
+  res.status(200).json({
+    status: "success",
+  });
+});
+
 module.exports = {
   getCheckoutSession,
+  createBookingCheckout,
 };

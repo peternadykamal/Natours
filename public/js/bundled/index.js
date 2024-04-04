@@ -22773,12 +22773,12 @@ var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
 var _alertsDefault = parcelHelpers.interopDefault(_alerts);
-const publicKey = document.getElementById("stripe-js").dataset.key;
-// TODO: there is might be no need to import Stripe, so if that the case
-// then remove it from this file and the tour.pug file also.
-// also remove the primarykey from viewsController.js, env file and customHelmetFn.js
-const stripe = Stripe(publicKey);
 const bookTour = async (tourId)=>{
+    const publicKey = document.getElementById("stripe-js").dataset.key;
+    // TODO: there is might be no need to import Stripe, so if that the case
+    // then remove it from this file and the tour.pug file also.
+    // also remove the primarykey from viewsController.js, env file and customHelmetFn.js
+    const stripe = Stripe(publicKey);
     try {
         // 1) Get checkout session from API
         const { checkoutUrl } = (await (0, _axiosDefault.default)(`/api/v1/bookings/checkout-session/${tourId}`)).data;
