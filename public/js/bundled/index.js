@@ -22767,18 +22767,13 @@ const updateUserPassword = async (password, newPassword, newPasswordConfirm)=>{
 };
 
 },{"axios":"9EQWr","./alerts":"7OVVV","@parcel/transformer-js/src/esmodule-helpers.js":"4Jjrx"}],"1Hd4M":[function(require,module,exports) {
-/* global Stripe */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
 var _alertsDefault = parcelHelpers.interopDefault(_alerts);
 const bookTour = async (tourId)=>{
-    const publicKey = document.getElementById("stripe-js").dataset.key;
-    // TODO: there is might be no need to import Stripe, so if that the case
-    // then remove it from this file and the tour.pug file also.
-    // also remove the primarykey from viewsController.js, env file and customHelmetFn.js
-    const stripe = Stripe(publicKey);
     try {
         // 1) Get checkout session from API
         const { checkoutUrl } = (await (0, _axiosDefault.default)(`/api/v1/bookings/checkout-session/${tourId}`)).data;

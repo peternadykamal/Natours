@@ -3,8 +3,6 @@ include _reviewCard
 
 block append head
   link(rel='stylesheet' href='/js/leaflet/leaflet.css' )
-  script#stripe-js( src="https://js.stripe.com/v3/" data-key=`${stripePublicKey}`)
-
 
 mixin overviewBox(label, text, icon)
   .overview-box__detail
