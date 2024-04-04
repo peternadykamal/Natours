@@ -6,6 +6,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
+const compression = require("compression");
 
 const helmet = require("./utils/customHelmetFn");
 const viewRouter = require("./routes/viewRoutes");
@@ -63,6 +64,8 @@ app.use(
   })
 );
 
+app.use(compression());
+
 // middleware to serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -88,7 +91,6 @@ app.use(helmet);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  if (Object.entries(req.cookies).length) console.log(req.cookies);
   next();
 });
 

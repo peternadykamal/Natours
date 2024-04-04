@@ -9,7 +9,6 @@ const updateUserData = async (data) => {
       data,
     });
 
-    console.log("as;dlfsd");
     if (res.data.status === "success") {
       showAlert("success", "your data updated successfully");
     }

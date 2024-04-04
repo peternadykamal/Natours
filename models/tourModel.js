@@ -188,11 +188,6 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`query took ${Date.now() - this.start} milliseconds`);
-  next();
-});
-
 // aggregation middleware is triggered during aggregation pipeline stages
 
 tourSchema.pre("aggregate", function (next) {

@@ -192,7 +192,6 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     // in this case we need delete password reset token and password reset expires from database
     await new Email(user, resetURL).sendPasswordReset();
   } catch (err) {
-    console.log(err);
     await user.deletePasswordResetToken();
     throw new AppError(
       "There was an error sending the email. Try again later",
