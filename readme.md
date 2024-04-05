@@ -1,6 +1,6 @@
 ## Introduction
 
-![Walkthrough](./dev-data/readme/walkthrough.gif)
+![Walkthrough](./dev-data/readme/walkthrough-compressed.gif)
 
 Welcome to the Natours web app! Natours is a platform designed to help users book their next tour. Whether you're looking for a thrilling adventure or a relaxing getaway, Natours has you covered.
 
@@ -37,16 +37,7 @@ Natours offers a range of features to enhance your tour booking experience:
 
 Natours is designed with security, performance, and user experience in mind, providing users with a seamless and enjoyable booking platform.
 
-<div style="display: flex;">
-    <img src="./dev-data/readme/1.png" alt="screenshot 1" style="width: 50%;">
-    <img src="./dev-data/readme/2.png" alt="screenshot 2" style="width: 50%;">
-</div>
-
-<div style="display: flex;">
-    <img src="./dev-data/readme/3.png" alt="screenshot 3" style="width: 50%;">
-    <img src="./dev-data/readme/4.png" alt="screenshot 4" style="width: 50%;">
-</div>
-
+![screenshots](./dev-data/readme/collage.png)
 ![documentation screenshot](./dev-data/readme/api_docs.png)
 
 ## Technology Stack
