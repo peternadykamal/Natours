@@ -27,8 +27,6 @@ Natours offers a range of features to enhance your tour booking experience:
   - **HTTP Security Headers**: Natours sets various HTTP security headers, including X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Strict-Transport-Security, and Content-Security-Policy, to enhance security and mitigate potential vulnerabilities.
   - **JWT Token Expiration and Health Checks**: Natours ensures the security of JWT (JSON Web Tokens) by setting expiration dates for both authentication and password reset tokens. Additionally, the app performs health checks on tokens to verify their validity before granting access.
 
-With these measures in place, Natours enhances the security of user authentication and password reset processes, safeguarding user accounts and data against unauthorized access and malicious activities.
-
 - **MVC Architecture**: Natours follows the Model-View-Controller (MVC) architectural pattern, separating concerns for better code organization and maintainability.
 
 - **Descriptive Error Handling**: Both the frontend and backend of Natours feature descriptive error handling, ensuring users receive clear and informative error messages when issues occur.
